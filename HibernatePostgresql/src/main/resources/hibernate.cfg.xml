@@ -14,7 +14,12 @@
         <property name="show_sql">true</property>
     	<property name="format_sql">true</property>
     	
+    	<!--  xml based mappings -->
         <mapping resource="org/bytegeeks/learn/Product.hbm.xml"/>
         <mapping resource="org/bytegeeks/learn/Category.hbm.xml"/>
+        
+        <!--  annotation based mappings -->
+        <mapping class="org.bytegeeks.learn.Address"/>
+        <mapping class="org.bytegeeks.learn.Employee"/>
     </session-factory>
 </hibernate-configuration>
