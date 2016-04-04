@@ -1,6 +1,0 @@
-Example on how to use AspectJ with java
-
-STEPS TO EXECUTE
-----------------
-1. run mvn clean package appassembler:assemble
-2. Run shell/bat script in target/appassembler/bin/run
