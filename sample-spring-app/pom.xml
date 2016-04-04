@@ -1,0 +1,189 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.bytegeeks</groupId>
+	<artifactId>sample-spring-app</artifactId>
+	<version>0.0.1</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<jetty-version>9.2.0.RC0</jetty-version>
+		<spring-version>4.1.4.RELEASE</spring-version>
+		<swagger-version>1.5.3-M1</swagger-version>
+		<slf4j-version>1.7.20</slf4j-version>
+		<aspectjweaver-version>1.8.9</aspectjweaver-version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectjweaver-version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>${swagger-version}</version>
+		</dependency>
+	</dependencies>
+
+
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<configuration>
+						<webResources>
+							<webResource>
+								<directory>${project.build.directory}/classes/org/bytegeeks/embedded</directory>
+								<targetPath>org/bytegeeks/embedded</targetPath>
+							</webResource>
+						</webResources>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<mainClass>org.bytegeeks.embedded.MainLauncher</mainClass>
+							</manifest>
+						</archive>
+						<packagingExcludes>
+							WEB-INF/classes/org/bytegeeks/embedded/MainLauncher,
+							WEB-INF/lib/jetty-http-*.jar,
+							WEB-INF/lib/jetty-io-*.jar,
+							WEB-INF/lib/jetty-server-*.jar,
+							WEB-INF/lib/jetty-servlet-*.jar,
+							WEB-INF/lib/jetty-util-*.jar,
+							WEB-INF/lib/jetty-webapp-*.jar,
+							WEB-INF/lib/jetty-security-*.jar,
+							WEB-INF/lib/jetty-xml-*.jar,
+							WEB-INF/lib/aspectjweaver-*.jar,
+							WEB-INF/lib/spring-instrument-*.jar
+						</packagingExcludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<!-- Extract the Jetty classes into the root of the jar so that the AppLauncher 
+				can access them. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-java-agent</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>
+								org.aspectj,org.springframework
+							</includeGroupIds>
+							<includeArtifactIds>
+								aspectjweaver,spring-instrument
+							</includeArtifactIds>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jetty-classpath</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>org.bytegeeks,org.eclipse.jetty,javax.servlet</includeGroupIds>
+							<excludeArtifactIds>jsp-api,jstl</excludeArtifactIds>
+							<excludes>META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA</excludes>
+							<outputDirectory>
+								${project.build.directory}/${project.artifactId}
+							</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>audit-classpath</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>build-classpath</goal>
+						</goals>
+						<configuration>
+							<outputFile>target/audit/classpath.txt</outputFile>
+							<pathSeparator>:</pathSeparator>
+							<includeScope>compile</includeScope>
+							<excludeGroupIds>
+								org.eclipse.jetty,
+								javax.servlet,
+								org.bytegeeks
+							</excludeGroupIds>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<configuration>
+					<programs>
+						<program>
+							<mainClass>org.bytegeeks.embedded.MainLauncher</mainClass>
+							<name>${project.artifactId}</name>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
