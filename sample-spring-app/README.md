@@ -14,4 +14,4 @@ This sample comes with an embedded web launcher that makes it self contained and
 #### TEST
 1. run mvn clean package appassembler:assemble
 2. Run shell/bat script in target/appassembler/bin/<app-name>
-3. Open any browser and point to http://localhost:8080/test. If you see "All OK", then you are all set
+3. Open any browser and point to http://localhost:8080/test. If you see **"All OK"**, then you are all set
