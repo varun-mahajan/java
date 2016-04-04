@@ -1,4 +1,4 @@
-Sample Hello World type projects for Java
+Sample Hello World type projects for Java  
 This place will host various examples of Java projects in attempt to help people use this as reference. 
 
 **LICENSE**  
