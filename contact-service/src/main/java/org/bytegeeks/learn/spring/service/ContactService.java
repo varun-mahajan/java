@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import org.bytegeeks.learn.spring.api.Contact;
 import org.bytegeeks.learn.spring.api.IContactService;
 import org.bytegeeks.learn.spring.api.PhoneNumber;
 import org.bytegeeks.learn.spring.api.PhoneNumber.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,14 +22,14 @@ public class ContactService implements IContactService {
     //Map to store Contact.toString and corresponding Contact 
     private Map<String, Contact> mapUUIDToContact = new HashMap<String, Contact>();
 
-    private static final Logger LOG = Logger.getLogger(ContactService.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ContactService.class);
 
     /* (non-Javadoc)
      * @see org.bytegeeks.learn.spring.service.IContactService#getContact(java.lang.String)
      */
     public List<Contact> getContact(String matchExpr) {
         List<Contact> contacts = new ArrayList<Contact>();
-        LOG.info("Going to fetch contacts with expression: " + matchExpr);
+        LOG.info("Going to fetch contacts with expression: {} ", matchExpr);
 
         if (matchExpr == null) {
             contacts.addAll(mapUUIDToContact.values());
@@ -36,7 +37,8 @@ public class ContactService implements IContactService {
             Iterator<Contact> itr = mapUUIDToContact.values().iterator();
             while (itr.hasNext()) {
                 Contact contact = itr.next();
-                LOG.info("Checking if " + contact + " contains " + matchExpr);
+                boolean isExist = contact.toString().contains(matchExpr);
+                LOG.info("Checking if {} contains {}. Result: {}", contact, matchExpr, isExist);
                 if (contact.toString().contains(matchExpr)) {
                     contacts.add(contact);
                 }
@@ -57,7 +59,7 @@ public class ContactService implements IContactService {
         }
         mapUUIDToContact.put(contact.getUUID().toString(), contact);
         result = true;
-        LOG.info("Successfully added contact: " + contact);
+        LOG.info("Successfully added contact: {}", contact);
 
         return result;
     }
@@ -69,10 +71,10 @@ public class ContactService implements IContactService {
         boolean result = false;
         Contact deletedContact = mapUUIDToContact.remove(uuid);
         if (deletedContact != null) {
-            LOG.info("Successfully deleted contact: " + deletedContact);
+            LOG.info("Successfully deleted contact: {}", deletedContact);
             result = true;
         } else {
-            LOG.severe("Contact with UUID: " + uuid + " doesn't exist");
+            LOG.error("Contact with UUID: {} doesn't exist", uuid);
             result = false;
         }
         return result;
@@ -84,7 +86,7 @@ public class ContactService implements IContactService {
     public boolean updateContact(Contact contact) {
         boolean result = false;
         mapUUIDToContact.put(contact.getUUID().toString(), contact);
-        LOG.info("Successfully updated contact: " + contact);
+        LOG.info("Successfully updated contact: {}", contact);
         return result;
     }
 

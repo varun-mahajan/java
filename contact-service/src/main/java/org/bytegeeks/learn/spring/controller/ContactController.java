@@ -1,10 +1,11 @@
 package org.bytegeeks.learn.spring.controller;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bytegeeks.learn.spring.api.Contact;
 import org.bytegeeks.learn.spring.api.IContactService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +24,24 @@ public class ContactController {
     @Autowired
     private IContactService contactService;
 
-    private static final Logger LOG = Logger.getLogger(ContactController.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ContactController.class);
 
     @ApiOperation(notes = "Get Contacts", value = "List all contacts or with a search criteria")
     @RequestMapping(value = "/contact", method = RequestMethod.GET, produces = { "application/json" })
     public ResponseEntity<List<Contact>> getContact(@RequestParam(required = false, value = "q") String q) {
         ResponseEntity<List<Contact>> returnValue = new ResponseEntity<List<Contact>>(contactService.getContact(q),
                 HttpStatus.OK);
-        LOG.info("total contacts returned: " + returnValue.getBody().size());
+        LOG.info("total contacts returned: {}", returnValue.getBody().size());
         return returnValue;
     }
 
     @RequestMapping(value = "/contact/{id}", method = RequestMethod.DELETE, produces = { "application/json" })
-    public ResponseEntity<HttpStatus> deleteContact(@PathVariable String id) {
+    public ResponseEntity<String> deleteContact(@PathVariable String id) {
         boolean result = contactService.deleteContact(id);
         if (result)
-            return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+            return new ResponseEntity<String>("Success", HttpStatus.OK);
         else
-            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Contact with id: " + id + " not found", HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.POST, produces = { "application/json" }, consumes = {
@@ -60,7 +61,7 @@ public class ContactController {
         if (result)
             return new ResponseEntity<HttpStatus>(HttpStatus.OK);
         else
-            return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation(notes = "Get Contacts", value = "List all contacts or with a search criteria")

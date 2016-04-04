@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface IContactService {
 
-    List<Contact> getContact(String matchExpr);
+    public List<Contact> getContact(String matchExpr);
 
-    boolean addContact(Contact contact);
+    public boolean addContact(Contact contact);
 
-    boolean deleteContact(String uuid);
+    public boolean deleteContact(String uuid);
 
-    boolean updateContact(Contact contact);
+    public boolean updateContact(Contact contact);
 
-    String generateRandomData();
+    public String generateRandomData();
 
 }
