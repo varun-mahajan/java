@@ -1,6 +1,6 @@
 Sample hibernate program with postgres.
 
-#### PREREQUISITE
+######## PREREQUISITE
 Assume postgresql runs on localhost, otherwise change settigs in hibernate.cfg.xml
 
 #### STEPS TO EXECUTE
