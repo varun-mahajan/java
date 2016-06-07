@@ -35,16 +35,16 @@ public class GroovyMain implements ApplicationContextAware {
 
     @PostConstruct
     public void postInit() throws IOException {
+
         LOG.info(
                 "Sample Groovy program illustrating dynamic code runtime with Groovy integration. Change the code.groovy file and the execution results will be printed");
-        scriptEngine = new GroovyScriptEngine(".");
+        scriptEngine = new GroovyScriptEngine(System.getProperty("user.dir"));
     }
 
     @Scheduled(fixedDelay = 1000)
     public void processGroovyCode() {
         try {
             File codeFile = new File(CODE_FILE);
-            LOG.debug("Checking if re-run is needed: {}", codeFile.exists());
             if (codeFile.exists()) {
                 if (lastModifiedTime != codeFile.lastModified()) {
                     executionCounter++;
@@ -52,7 +52,6 @@ public class GroovyMain implements ApplicationContextAware {
                     Object result;
                     result = scriptEngine.run(CODE_FILE, new Binding());
                     LOG.info("Groovy script result: {}", result);
-
                 }
             }
         } catch (Exception e) {
