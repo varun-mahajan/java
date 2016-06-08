@@ -47,11 +47,12 @@ public class GroovyMain implements ApplicationContextAware {
             File codeFile = new File(CODE_FILE);
             if (codeFile.exists()) {
                 if (lastModifiedTime != codeFile.lastModified()) {
+                    LOG.info("Executing groovy script.");
                     executionCounter++;
                     lastModifiedTime = codeFile.lastModified();
                     Object result;
                     result = scriptEngine.run(CODE_FILE, new Binding());
-                    LOG.info("Groovy script result: {}", result);
+                    LOG.info("Execution of groovy script completed with result: {}", result);
                 }
             }
         } catch (Exception e) {
