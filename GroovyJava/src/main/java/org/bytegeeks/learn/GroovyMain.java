@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -87,8 +88,12 @@ public class GroovyMain implements ApplicationContextAware {
 
     private void executeScript(File codeFile) throws IOException {
         LOG.info("===== Executing groovy script: '{}' ===== ", codeFile.getName());
+        StopWatch watch = new StopWatch();
+        watch.start();
         Object result = shell.evaluate(codeFile);
-        LOG.info("===== Execution of groovy script completed with result: {} ===== ", result);
+        watch.stop();
+        LOG.info("===== Execution of groovy script completed in {}ms with result: {} ===== ",
+                watch.getTotalTimeMillis(), result);
     }
 
 
