@@ -134,7 +134,13 @@ public class GroovyMain implements ApplicationContextAware {
         String allBeansNames[] = appContext.getBeanDefinitionNames();
         for (String beanName : allBeansNames) {
             try {
-                mapBindings.put(beanName, appContext.getBean(beanName));
+                Object bean = appContext.getBean(beanName);
+                mapBindings.put(beanName, bean);
+                String aliases[] = appContext.getAliases(beanName);
+                // Add all the alias names in groovy env as well
+                for (String alias : aliases) {
+                    mapBindings.put(alias, bean);
+                }
             } catch (Exception e) {
                 LOG.error("Unable to find bean reference for {}. It will not be available as variable in groovy script", beanName);
             }
