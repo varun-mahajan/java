@@ -61,6 +61,7 @@ public class GroovyMain implements ApplicationContextAware {
         while (true) {
             try {
                 watckKey = watcher.take();
+                Thread.sleep(1000l);
                 List<WatchEvent<?>> events = watckKey.pollEvents();
                 for (WatchEvent event : events) {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE || event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
