@@ -139,7 +139,7 @@ public class GroovyMain implements ApplicationContextAware {
                 LOG.error("Unable to find bean reference for {}. It will not be available as variable in groovy script", beanName);
             }
         }
-        mapBindings.put("groovyAppContext", appContext);
+        mapBindings.put("appContext", appContext);
 
         ImportCustomizer customizer = new ImportCustomizer();
         // customizer.addStarImports("java");
