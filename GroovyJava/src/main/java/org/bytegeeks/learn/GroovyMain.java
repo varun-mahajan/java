@@ -1,6 +1,7 @@
 package org.bytegeeks.learn;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -60,8 +60,10 @@ public class GroovyMain implements ApplicationContextAware {
     private void loadBeanAliases() {
         try {
             LOG.info("Creating bean aliases from '{}'", BEAN_ALIASING_FILE);
-            Properties aliases = PropertiesLoaderUtils.loadAllProperties(BEAN_ALIASING_FILE);
-
+            Properties aliases = new Properties();
+            FileInputStream is = new FileInputStream(BEAN_ALIASING_FILE);
+            aliases.load(is);
+            is.close();
             for (String name : aliases.stringPropertyNames()) {
                 String beanRef = aliases.getProperty(name);
                 try {
@@ -69,7 +71,8 @@ public class GroovyMain implements ApplicationContextAware {
                     shell.setVariable(name, bean);
                     LOG.info("Creating '{}' as alias for bean '{}'", name, beanRef);
                 } catch (Exception e) {
-                    LOG.error("Can't create alias name '{}', as bean '{}' doesn't exist", name, beanRef);
+                    LOG.error("Can't create alias name '{}', as bean '{}' doesn't exist. Exception: {}", name, beanRef,
+                            e);
                 }
             }
         } catch (Exception e) {
