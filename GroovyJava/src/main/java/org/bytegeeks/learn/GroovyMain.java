@@ -11,6 +11,7 @@ import java.nio.file.WatchService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -45,12 +47,34 @@ public class GroovyMain implements ApplicationContextAware {
 
     private static Path scriptsDir = Paths.get(System.getProperty("user.dir"));
 
+    private static final String BEAN_ALIASING_FILE = "beanAliases.properties";
     private static WatchService watcher;
 
     @PostConstruct
     public void postInit() throws IOException {
         setGroovyEnvironment();
+        loadBeanAliases();
         startGroovyWatcher();
+    }
+
+    private void loadBeanAliases() {
+        try {
+            LOG.info("Creating bean aliases from '{}'", BEAN_ALIASING_FILE);
+            Properties aliases = PropertiesLoaderUtils.loadAllProperties(BEAN_ALIASING_FILE);
+
+            for (String name : aliases.stringPropertyNames()) {
+                String beanRef = aliases.getProperty(name);
+                try {
+                    Object bean = appContext.getBean(beanRef);
+                    shell.setVariable(name, bean);
+                    LOG.info("Creating '{}' as alias for bean '{}'", name, beanRef);
+                } catch (Exception e) {
+                    LOG.error("Can't create alias name '{}', as bean '{}' doesn't exist", name, beanRef);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Unable to create bean aliases: {}", e);
+        }
     }
 
     public void startGroovyWatcher() throws IOException {
