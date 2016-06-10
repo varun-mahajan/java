@@ -76,7 +76,7 @@ public class GroovyMain implements ApplicationContextAware {
                 }
             }
         } catch (Exception e) {
-            LOG.error("Unable to create bean aliases: {}", e);
+            LOG.warn("Unable to read bean aliases. Reason: {}", e.getMessage());
         }
     }
 
