@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -32,7 +31,6 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 @Component
-@EnableScheduling
 public class GroovyMain implements ApplicationContextAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroovyMain.class);
