@@ -50,9 +50,18 @@ public class GroovyMain implements ApplicationContextAware {
 
     @PostConstruct
     public void postInit() throws IOException {
-        setGroovyEnvironment();
-        loadBeanAliases();
-        startGroovyWatcher();
+        new Thread(new Runnable() {
+
+            public void run() {
+                setGroovyEnvironment();
+                loadBeanAliases();
+                try {
+                    startGroovyWatcher();
+                } catch (IOException e) {
+                    LOG.error("Error in startGroovyWatcher", e);
+                }
+            }
+        }, "Groovy Scripts watcher").start();
     }
 
     private void loadBeanAliases() {
