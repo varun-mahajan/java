@@ -113,7 +113,7 @@ public class GroovyMain implements ApplicationContextAware {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOG.error("Exception while executing script: {}", e);
             }
             watckKey.reset();
