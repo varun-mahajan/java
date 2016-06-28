@@ -77,7 +77,7 @@ public class MainAnnotationAggregator {
                 List<Method> allMethods = entry.getValue();
                 if (!CollectionUtils.isEmpty(allMethods)) {
                     for (Method method : allMethods) {
-                        LOG.info("Calling method {} on bean {}", method, bean);
+                        LOG.info("Calling {}.{}", bean.getClass().getName(), method.getName());
                         try {
                             method.invoke(bean);
                         } catch (Exception e) {
