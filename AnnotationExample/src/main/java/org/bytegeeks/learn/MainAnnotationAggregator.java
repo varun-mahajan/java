@@ -1,8 +1,10 @@
 package org.bytegeeks.learn;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,7 +39,7 @@ public class MainAnnotationAggregator {
         if (annotatedClasses != null && annotatedClasses.size() > 0) {
             List<Object> tempList = new ArrayList<Object>();
             tempList.addAll(annotatedClasses.values());
-
+            checkForMissingOrDuplicateOrder(tempList);
             // Sort the list of beans. For this to work, classes
             // should have annotated with @Order
             AnnotationAwareOrderComparator.sort(tempList);
@@ -91,4 +94,30 @@ public class MainAnnotationAggregator {
 
     }
 
+    private void checkForMissingOrDuplicateOrder(List<Object> listBeans) {
+        Map<Integer, Object> orderAndBeanMap = new HashMap<Integer, Object>();
+        for (Object bean : listBeans) {
+            Annotation[] anns = bean.getClass().getDeclaredAnnotations();
+            boolean orderAnnotationFound = false;
+            for (Annotation a : anns) {
+                if (a instanceof Order) {
+                    LOG.info("the map: {}", orderAndBeanMap);
+                    Integer order = ((Order) a).value();
+                    orderAnnotationFound = true;
+                    if (orderAndBeanMap.get(order) == null) {
+                        orderAndBeanMap.put(order, bean);
+                    } else {
+                        LOG.error(
+                                "Bean {} defines order as {} which conflicts with bean {}. Order on beans should be unique. Please correct.",
+                                bean.getClass().getName(), order, orderAndBeanMap.get(order).getClass().getName());
+                    }
+                    LOG.info("Found order annotation with order {}", order);
+                    break;
+                }
+            }
+            if (!orderAnnotationFound) {
+                LOG.error("{} annotation not found on class {}", Order.class.getName(), bean.getClass().getName());
+            }
+        }
+    }
 }

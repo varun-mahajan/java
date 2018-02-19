@@ -10,5 +10,4 @@
 	<context:annotation-config />
 	<context:spring-configured />
 	<context:component-scan base-package="org.bytegeeks" />
-
 </beans>

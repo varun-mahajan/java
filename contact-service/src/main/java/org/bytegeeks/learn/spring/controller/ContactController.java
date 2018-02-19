@@ -29,6 +29,8 @@ public class ContactController {
     @ApiOperation(notes = "Get Contacts", value = "List all contacts or with a search criteria")
     @RequestMapping(value = "/contact", method = RequestMethod.GET, produces = { "application/json" })
     public ResponseEntity<List<Contact>> getContact(@RequestParam(required = false, value = "q") String q) {
+        LOG.info("value of q is: " + q);
+        LOG.info("long value: " + getLongValue(q));
         ResponseEntity<List<Contact>> returnValue = new ResponseEntity<List<Contact>>(contactService.getContact(q),
                 HttpStatus.OK);
         LOG.info("total contacts returned: {}", returnValue.getBody().size());
@@ -70,6 +72,25 @@ public class ContactController {
         LOG.info("All OK");
         String str = contactService.generateRandomData();
         return new ResponseEntity<String>(str, HttpStatus.OK);
+    }
+
+    public static Long getLongValue(String longValue) {
+        Long value = null;
+        // means user sent the key but not value
+        if (longValue == null) {
+            value = null;
+        }
+        // use didn't send it
+        else if (longValue.trim().length() == 0) {
+            value = 0l;
+        } else {
+            try {
+                value = Long.valueOf(longValue);
+            } catch (Exception e) {
+                LOG.error("Invalid field");
+            }
+        }
+        return value;
     }
 
 }
