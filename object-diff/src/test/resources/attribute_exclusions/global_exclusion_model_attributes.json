@@ -1,0 +1,9 @@
+{
+  "global_exclusion_model_attributes": [
+    "instanceUuid",
+    "instanceId",
+    "instanceVersion",
+    "authEntityClass",
+    "authEntityId"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+
+  "interfaces": [
+    "java.util.HashSet",
+    [
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceId": 87117,
+        "instanceVersion": 0,
+        "network": "int-mgmt-net",
+        "nicid": 0,
+        "portForwarding": [
+          "java.util.HashSet",
+          []
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceId": 87119,
+        "instanceVersion": 0,
+        "ipAddress": "4.1.0.17",
+        "network": "LAN-SRIOV-1",
+        "nicid": 2,
+        "portForwarding": [
+          "java.util.HashSet",
+          []
+        ]
+      }
+  ]
+  ]
+}

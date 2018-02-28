@@ -1,0 +1,20 @@
+[
+  {
+    "op": "replace",
+    "configuredValue": "Red",
+    "intendedValue": "Orange",
+    "moveFromPath": null,
+    "path": "/color",
+    "objectClassifier": "MODEL",
+    "objectType": ""
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "red",
+    "moveFromPath": null,
+    "path": "/carray/0",
+    "objectClassifier": "MODEL",
+    "objectType": ""
+  }
+]

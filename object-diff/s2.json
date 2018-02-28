@@ -1,0 +1,34 @@
+{
+
+  "interfaces": [
+    "java.util.HashSet",
+    [
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "f24ccb02-f43f-4760-a8f5-660dc238c2c5",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "ipAddress": "4.1.0.17",
+        "network": "LAN-SRIOV-1",
+        "nicid": 2,
+        "portForwarding": [
+          "java.util.HashSet",
+          []
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "850e4884-5447-416b-9ec6-0613dfc1d2c6",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "network": "int-mgmt-net",
+        "nicid": 0,
+        "portForwarding": [
+          "java.util.HashSet",
+          [
+          ]
+        ]
+      }
+  ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parentId": "f77bc89e-e7aa-4d3d-b210-5968e3811eb6",
+  "scopeRule": null,
+  "dynamicRules": null,
+  "systemGroup": null,
+  "additionalInfo": [
+    {
+      "nameSpace": "com.wireless.managingwlc",
+      "attributes": {
+        "anchorWlcInheritedFrom": "f77bc89e-e7aa-4d3d-b210-5968e3811eb6",
+        "primaryWlcInheritedFrom": "f77bc89e-e7aa-4d3d-b210-5968e3811eb6"
+      }
+    },
+    {
+      "nameSpace": "Location",
+      "attributes": {
+        "country": "Brazil",
+        "address": "S??o Paulo, S??o Paulo, Brazil",
+        "latitude": "-23.550700",
+        "addressInheritedFrom": "dfebe338-d38c-41fd-a13f-a15ca81d9d54",
+        "type": "building",
+        "longitude": "-46.633400"
+      }
+    }
+  ],
+  "groupNameHierarchy": "Global/G1/B1",
+  "groupTypeList": [
+    "SITE"
+  ],
+  "name": "B1",
+  "id": "dfebe338-d38c-41fd-a13f-a15ca81d9d54"
+}

@@ -1,0 +1,415 @@
+{
+  "@class": "com.cisco.esa.model.Deployment",
+  "instanceUuid": "f899388d-7502-46f3-bd61-3852fa8e4b49",
+  "instanceId": 0,
+  "displayName": "2d84d9b0[88097_88097,bgl13-isrv-isrv]",
+  "deployPending": "NONE",
+  "instanceVersion": 0,
+  "description": "ISRV",
+  "name": "bgl13-isrv-isrv",
+  "owningEntityId": "88097_88097",
+  "adminRules": [
+    "java.util.HashSet",
+    [
+      {
+        "@class": "com.cisco.esa.model.Rule",
+        "instanceUuid": "258114db-cbf6-4d7b-a656-eb47c40e80a1",
+        "action": [
+          "java.util.HashSet",
+          [
+            "ALWAYS log",
+            "TRUE servicebooted.sh",
+            "FALSE recover autohealing"
+          ]
+        ],
+        "eventName": "VM_ALIVE"
+      }
+    ]
+  ],
+  "bootupTime": 600,
+  "configData": [
+    "java.util.HashSet",
+    [
+      {
+        "@class": "com.cisco.esa.model.Configuration",
+        "instanceUuid": "40d813b0-2c08-4780-be78-2a72663c614e",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "dst": "bootstrap_config",
+        "variable": [
+          "java.util.HashSet",
+          [
+            {
+              "@class": "com.cisco.esa.model.Variable",
+              "instanceUuid": "a1e131a8-9149-415c-9c84-25ae42499194",
+              "name": "TECH_PACKAGE",
+              "val": "ax"
+            },
+            {
+              "@class": "com.cisco.esa.model.Variable",
+              "instanceUuid": "ced196f5-8b64-4efb-8c50-5ba3d16c504c",
+              "name": "ngio",
+              "val": "enable"
+            }
+          ]
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.Configuration",
+        "instanceUuid": "0f19ffef-6da1-480c-b107-b7695b2f0a55",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "data": "hostname bgl13-isrv-isrv\\n!\\nplatform console virtual\\n!\\nip subnet-zero\\nno ip domain-lookup\\nip domain name cisco.com\\n!\\nvrf definition Mgmt-intf\\n !\\n address-family ipv4\\n exit-address-family\\n !\\n address-family ipv6\\n exit-address-family\\n!\\ncrypto key generate rsa modulus 2048\\nip ssh version 2\\nip ssh authentication-retries 5\\nip scp server enable\\nfile prompt quiet\\n!\\ninterface GigabitEthernet1\\n description Internal Mgmt Network\\n vrf forwarding Mgmt-intf\\n no shut\\n!\\ninterface GigabitEthernet2\\n description WAN Network\\n ip address 1.1.1.0 255.255.255.0\\n no shut\\n!\\ninterface GigabitEthernet3\\n description LAN Network\\n ip address 10.0.0.1 255.255.255.192\\n no shut\\n!\\ninterface GigabitEthernet4\\n description Service Network\\n ip address 12.0.0.1 255.255.255.192\\n no shut\\n!\\ninterface GigabitEthernet5 \\n description Management Network\\n ip address 13.0.0.1 255.255.255.192\\n no shut\\n!\\n!\\nip route 0.0.0.0 0.0.0.0 1.1.1.1\\nip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 10.20.0.1\\n!\\nline con 0\\n stopbits 1\\n!\\nusername admin password Enfv123$\\nenable password Enfv123$\\nline vty 0 15\\nlogin local\\ntransport input telnet\\nexit\\n!\\nsnmp-server community public ro\\nsnmp-server community private rw\\n",
+        "dst": "iosxe_config.txt",
+        "variable": [
+          "java.util.LinkedHashSet",
+          []
+        ]
+      }
+    ]
+  ],
+  "flavor": "ISRv-medium",
+  "image": "isrv-universalk9.16.04.01.tar.gz",
+  "interfaces": [
+    "java.util.HashSet",
+    [
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "6abe7e3d-6754-4fdf-8760-9ba23250a223",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "ipAddress": "1.1.1.0",
+        "network": "GE0-0-SRIOV-1",
+        "nicid": 1,
+        "portForwarding": [
+          "java.util.LinkedHashSet",
+          []
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "62d4c73e-02aa-4cda-930a-851074148255",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "network": "int-mgmt-net",
+        "nicid": 0,
+        "portForwarding": [
+          "java.util.HashSet",
+          [
+            {
+              "@class": "com.cisco.esa.model.Port",
+              "instanceUuid": "adcaf8cd-c375-4b65-9e5c-6b3480b5ccb4",
+              "externalPortEndRange": 20022,
+              "externalPortStartRange": 20022,
+              "protocol": "tcp",
+              "type": "ssh",
+              "vnfPort": 22
+            }
+          ]
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "30eb3763-72fd-4e0b-b354-5bf4f7976843",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "ipAddress": "10.0.0.1",
+        "network": "LAN-SRIOV-1",
+        "nicid": 2,
+        "portForwarding": [
+          "java.util.LinkedHashSet",
+          []
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "6435a257-eecb-4d2c-b981-c72a04c64e41",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "ipAddress": "12.0.0.1",
+        "network": "service-net",
+        "nicid": 3,
+        "portForwarding": [
+          "java.util.LinkedHashSet",
+          []
+        ]
+      },
+      {
+        "@class": "com.cisco.esa.model.VmGroupInterface",
+        "instanceUuid": "65a21c82-d93f-4c42-9ff7-6c2cae26fec5",
+        "instanceId": 0,
+        "instanceVersion": 0,
+        "ipAddress": "13.0.0.1",
+        "network": "mgmt-net",
+        "nicid": 4,
+        "portForwarding": [
+          "java.util.LinkedHashSet",
+          []
+        ]
+      }
+    ]
+  ],
+  "kpi": {
+    "@class": "com.cisco.esa.model.Kpi",
+    "instanceUuid": "2952f93c-7a3a-4761-aecf-0c37ca641f29",
+    "eventName": "VM_ALIVE",
+    "metricCollector": {
+      "@class": "com.cisco.esa.model.MetricCollector",
+      "instanceUuid": "428bbb66-691b-4c77-9262-58f096c7a79f",
+      "continuousAlarm": false,
+      "nicid": 0,
+      "pollFrequency": 3,
+      "pollingUnit": "seconds",
+      "type": "ICMPPing"
+    },
+    "metricCond": "GT",
+    "metricType": "UINT32",
+    "metricValue": "1"
+  },
+  "placements": [
+    "java.util.LinkedHashSet",
+    []
+  ],
+  "recoveryPolicy": [
+    "java.util.LinkedHashSet",
+    []
+  ],
+  "recoveryWaitTime": 0,
+  "scaling": {
+    "@class": "com.cisco.esa.model.Scaling",
+    "instanceUuid": "ea0f9681-7ecc-4f9c-8cba-f34c6e0d90d8",
+    "maxActive": 1,
+    "minActive": 1
+  },
+  "userRules": [
+    "java.util.LinkedHashSet",
+    []
+  ],
+  "vmGroupName": "bgl13-isrv-isrv",
+  "managedComputeElement": {
+    "@class": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.ManagedComputeElement",
+    "instanceUuid": "26cee78e-098e-4370-9918-8f978e70f097",
+    "instanceId": 91092,
+    "authEntityId": 88097,
+    "displayName": "585dfba4[10.104.240.62_nfvos,10.104.240.62]",
+    "authEntityClass": -927529445,
+    "deployPending": "NONE",
+    "lazyLoadedEntities": {
+      "@class": "java.util.HashMap",
+      "managedNR": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "659418c4-055f-45d7-bee3-578815235dab",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.managedNR",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "connectivityNetwork": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "00859a21-9d08-4598-9f67-3329b3e5d8a9",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.connectivityNetwork",
+        "concreteClass": "org.hibernate.collection.PersistentBag"
+      },
+      "composedNRs": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "373f77a1-bb0b-4d05-94cb-a49ee1076ead",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.composedNRs",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "hostedNE": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "6ea5ed9c-d8e8-4326-99cc-302f0bfd7bdd",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.hostedNE",
+        "concreteClass": "org.hibernate.collection.PersistentBag"
+      },
+      "equipment": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "ef58c1b9-a7a2-45d4-a9c9-45949eced2d7",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.equipment",
+        "concreteClass": "org.hibernate.collection.PersistentBag"
+      },
+      "networkFunctions": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "dcbe6d78-d41b-4024-bc19-72d6b0cd8e34",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.networkFunctions",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "nameServers": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "304bedd0-6c38-4dd2-8846-0e3251d47301",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.nameServers",
+        "concreteClass": "org.hibernate.collection.PersistentList"
+      },
+      "managementProtocolEndpoint": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "8d74b6f8-4eb5-4af0-ad06-63577decbe73",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.managementProtocolEndpoint",
+        "concreteClass": "org.hibernate.collection.PersistentBag"
+      },
+      "protocolEndpoint": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "e6f1eac2-760e-4189-ba8e-77006eb87dff",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.protocolEndpoint",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "functionalCapability": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "1ef42881-4a8b-40a5-a493-eaf80f598a0d",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.functionalCapability",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "srrgId": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "5ee67558-f1ad-4084-a43e-7a30d4ad1b8b",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkElement.srrgId",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "exposedLinkTerminationPoints": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "15780faa-01b9-4c3e-b1be-f4840bc775a2",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.exposedLinkTerminationPoints",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "partyRole": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "52df198c-988e-4c35-8222-653d55c09e37",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.partyRole",
+        "concreteClass": "org.hibernate.collection.PersistentBag"
+      },
+      "userTags": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "621acf30-bbec-418d-bf49-9c3268c4eb7c",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.userTags",
+        "concreteClass": "org.hibernate.collection.PersistentList"
+      },
+      "sharedRiskResourceGroup": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "60bd539c-9ee9-4de2-9451-f797d7951d2b",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.sharedRiskResourceGroup",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      },
+      "availableFeatures": {
+        "@class": "com.cisco.xmp.model.framework.lazy.PersistentCollectionLazyLoadInfo",
+        "instanceUuid": "07100d22-893c-48f5-923f-4201b98f1121",
+        "collKey": [
+          "java.lang.Long",
+          91092
+        ],
+        "collRole": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.NetworkResource.availableFeatures",
+        "concreteClass": "org.hibernate.collection.PersistentSet"
+      }
+    },
+    "instanceVersion": 0,
+    "description": "nfvos nfvos 10.104.240.62",
+    "name": "nfvis",
+    "owningEntityId": "88097_88097",
+    "nodeId": "0",
+    "userTags": null,
+    "availableFeatures": null,
+    "composedNRs": null,
+    "connectivityNetwork": null,
+    "equipment": null,
+    "exposedLinkTerminationPoints": null,
+    "functionalCapability": null,
+    "partyRole": null,
+    "protocolEndpoint": null,
+    "sharedRiskResourceGroup": null,
+    "managementAddress": {
+      "instanceUuid": "8d32363b-c182-4ce0-86a1-9c9d0b28c47c",
+      "paddedAddress": " 10.104.240. 62",
+      "addressType": "IP_V4",
+      "address": "10.104.240.62"
+    },
+    "nameServers": null,
+    "networkFunctions": null,
+    "productFamily": {
+      "@class": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.ProductFamilyEnum",
+      "instanceUuid": "3840d0b0-c0e7-47b9-b1f6-332b7b5ffabd",
+      "ordinal": 101010113,
+      "value": "NFVIS"
+    },
+    "productSeries": {
+      "@class": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.ProductSeriesEnum",
+      "instanceUuid": "fabf7b31-0106-4f0b-b105-e683a377d241",
+      "ordinal": 101010114,
+      "value": "NFVIS"
+    },
+    "productType": {
+      "@class": "com.cisco.xmp.model.foundation.encapsulatedFunctionality.ProductTypeEnum",
+      "instanceUuid": "fc12ddbc-51d4-496f-bb6b-01fe9947dd7f",
+      "ordinal": 101010115,
+      "value": "NFVIS"
+    },
+    "productVendor": "Cisco Systems Inc",
+    "softwareType": "NFVIS",
+    "softwareVersion": "3.6.1-FC3",
+    "srrgId": null,
+    "sysObjectId": "nfvos",
+    "useDomainName": false,
+    "hostedNE": null,
+    "managedNR": null,
+    "managementProtocolEndpoint": null,
+    "virInfraName": "10.104.240.62",
+    "virInfraParent": "10.104.240.62_host",
+    "virOwningEntityId": "10.104.240.62_nfvos"
+  },
+  "operation": "CREATE"
+}
