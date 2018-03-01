@@ -1,7 +1,6 @@
 package org.bytegeeks.audit;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -21,6 +20,7 @@ import org.bytegeeks.audit.ObjectDiff.ObjectDiffFlags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,17 +55,16 @@ public class ModelComparator implements AuditComparator {
   @PostConstruct
   public void initConf() {
     try {
-      LinkedHashMap<?, ?> map = mapper.readValue(Thread.currentThread().getContextClassLoader().getResource("attribute_exclusions/global_exclusion_model_attributes.json"), LinkedHashMap.class);
-      GLOBAL_IGNORE_ATTRIBUTE_LIST = (List)map.get("global_exclusion_model_attributes");
       File excludeFiles[] = getAttributeIgnoreFiles();
       for (int i = 0; i < excludeFiles.length; i++) {
         LOG.info("Parsing: {} file for exclusions", excludeFiles[i].getPath());
-        map = mapper.readValue(excludeFiles[i], LinkedHashMap.class);
+        LinkedHashMap<?, ?> map = mapper.readValue(excludeFiles[i], LinkedHashMap.class);
         modelExclusions.putAll((Map<? extends String, ? extends List<String>>) map);
       }
     } catch (Exception e) {
       LOG.error("Unable to parse global_exclusion_model_attributes.json file", e);
     }
+    GLOBAL_IGNORE_ATTRIBUTE_LIST.addAll(modelExclusions.get("global_exclusion_model_attributes"));
     LOG.info("Final ignore map is: {}", modelExclusions);
   }
 
@@ -99,8 +98,6 @@ public class ModelComparator implements AuditComparator {
 
     JsonNode left = (JsonNode)leftObj;
     JsonNode right = (JsonNode)rightObj;
-
-    parse(left);
     
     List<ObjectDiff> objectDiffList = new ArrayList<ObjectDiff>();
 
@@ -416,14 +413,4 @@ public class ModelComparator implements AuditComparator {
     }
   }
 
-  private void parse(JsonNode node) {
-    Iterator<Entry<String, JsonNode>> itr = node.fields();
-    while(itr.hasNext()) {
-      Entry<String, JsonNode> entry = itr.next();
-      if(entry.getValue().getNodeType() == JsonNodeType.ARRAY) {
-        LOG.info(entry.getKey() + ": " + entry.getValue());
-        ArrayNode array = (ArrayNode)entry.getValue();
-      }
-    }
-  }
 }

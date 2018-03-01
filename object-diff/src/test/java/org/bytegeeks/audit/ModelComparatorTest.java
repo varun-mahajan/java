@@ -1,8 +1,9 @@
 package org.bytegeeks.audit;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -16,6 +17,8 @@ public class ModelComparatorTest {
   ModelComparator modelComparator;
   ObjectMapper mapper;
 
+  Logger LOG = LoggerFactory.getLogger(ModelComparatorTest.class);
+  
   @BeforeMethod
   public void setup() {
     modelComparator = new ModelComparator();
@@ -33,6 +36,7 @@ public class ModelComparatorTest {
     
     List<ObjectDiff> actualDiff =  modelComparator.diff(beforeNode, afterNode);
     
+    LOG.info(mapper.writeValueAsString(actualDiff));
     Assert.assertEquals(mapper.writeValueAsString(expectedDiff), mapper.writeValueAsString(actualDiff));
   }
   
@@ -48,6 +52,7 @@ public class ModelComparatorTest {
     
     List<ObjectDiff> actualDiff =  modelComparator.diff(beforeNode, afterNode);
     
+    LOG.info(mapper.writeValueAsString(actualDiff));
     Assert.assertEquals(mapper.writeValueAsString(expectedDiff), mapper.writeValueAsString(actualDiff));
   }
   
