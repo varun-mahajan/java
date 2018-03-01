@@ -87,6 +87,65 @@ public class ModelComparator implements AuditComparator {
     return diff(leftObj, rightObj, null);
   }
 
+  public List<String> diffReadable(Object leftObj, Object rightObj) {
+    List<ObjectDiff> listDiff = diff(leftObj, rightObj, null);
+    List<String> stringDiffList = new ArrayList<String>();
+    for (ObjectDiff diff : listDiff) {
+      String thisObjectTypeFQDN = null;
+      String thisObjectTypeSimple = null;
+      if(StringUtils.isNotBlank(diff.getObjectType())) {
+        thisObjectTypeFQDN = diff.getObjectType();
+        if(StringUtils.isNotBlank(thisObjectTypeFQDN)) {
+          thisObjectTypeSimple = StringUtils.substringAfterLast(thisObjectTypeFQDN, ".");
+        }
+      }
+      String absolutePath = diff.getPath();
+      String path = thisObjectTypeSimple != null ? thisObjectTypeSimple : null;
+      String absPath[] = StringUtils.split(absolutePath,"/");
+      for(int i=0;i<absPath.length;i++){
+        if(StringUtils.isAlphaSpace(absPath[i])) {
+          if(path != null)
+            path=path + "." + absPath[i];
+          else 
+            path = absPath[i];
+        }
+      }
+      
+      boolean isTargetPrimitive = false;
+      
+      JsonNode intendedValue = (JsonNode)diff.getIntendedValue();
+      if(!intendedValue.getNodeType().equals(JsonNodeType.OBJECT) && !intendedValue.getNodeType().equals(JsonNodeType.ARRAY))
+      {
+        isTargetPrimitive = true;
+      }
+      StringBuffer temp = new StringBuffer();
+      temp.append(path + " is ");
+      if("add".equals(diff.getOp())) {
+        temp.append("missing ");
+        if(isTargetPrimitive) {
+          temp.append(intendedValue);
+        }
+      }
+      else if("remove".equals(diff.getOp())) {
+        if(isTargetPrimitive) {
+          temp.append("having extra ");
+          temp.append(intendedValue);
+        }
+        else {
+          temp.append("extra");
+        }
+      }
+      else if("replace".equals(diff.getOp())) {
+        if(isTargetPrimitive) {
+          temp.append("needs to change to " + intendedValue);
+        }
+      }
+      stringDiffList.add(temp.toString());
+    }
+    
+    return stringDiffList;
+  }
+  
   public List<ObjectDiff> diff(Object leftObj, Object rightObj, EnumSet<ObjectDiffFlags> objectDiffFlags) {
     boolean enableStrictIndex = false;
 

@@ -56,6 +56,18 @@ public class TestController {
         
     }
     
+    @RequestMapping(value = "/zson-diff/readable/{file1}/{file2}", method = RequestMethod.GET, produces = { "application/json" })
+    public ResponseEntity<List<String>> zsonDiffReadable(@PathVariable String file1,  @PathVariable String file2) throws JsonParseException, JsonMappingException, IOException {
+        LOG.debug("Calling flipkart zson-patch diff");
+        JsonNode beforeNode = mapper.readTree(new File(file1)); 
+        JsonNode afterNode = mapper.readTree(new File(file2));
+        
+        List<String> diff =  modelComparator.diffReadable(beforeNode, afterNode);
+
+        return new ResponseEntity<List<String>>(diff, HttpStatus.OK);
+        
+    }
+    
     @RequestMapping(value = "/zson-diff/reload", method = RequestMethod.GET, produces = { "application/json" })
     public ResponseEntity<String> reload() throws JsonParseException, JsonMappingException, IOException {
 
