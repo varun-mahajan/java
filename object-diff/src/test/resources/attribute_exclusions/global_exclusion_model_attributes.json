@@ -1,9 +1,12 @@
 {
-  "global_exclusion_model_attributes": [
-    "instanceUuid",
-    "instanceId",
-    "instanceVersion",
-    "authEntityClass",
-    "authEntityId"
-  ]
+    "modelClass":"global_exclusion_model_attributes",
+    "matchStrategy": "EXCLUDE",
+    "attributes": [
+      "instanceUuid",
+      "instanceId",
+      "instanceVersion",
+      "authEntityClass",
+      "authEntityId"
+    ]
+  }
 }

@@ -1,5 +1,3 @@
 {
-  "com.cisco.esa.model.Deployment": [
-
-  ]
+  "modelClass": "com.cisco.esa.model.Deployment"
 }

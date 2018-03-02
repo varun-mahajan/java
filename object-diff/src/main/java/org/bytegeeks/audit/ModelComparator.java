@@ -1,6 +1,7 @@
 package org.bytegeeks.audit;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -9,20 +10,20 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bytegeeks.audit.MatchingStrategy.STRATEGY;
 import org.bytegeeks.audit.ObjectDiff.ObjectClassifier;
 import org.bytegeeks.audit.ObjectDiff.ObjectDiffFlags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -42,9 +43,10 @@ public class ModelComparator implements AuditComparator {
   private static final Logger LOG = LoggerFactory.getLogger(ModelComparator.class);
 
   private List<String> GLOBAL_IGNORE_ATTRIBUTE_LIST = new ArrayList<String>();
+  private STRATEGY GLOBAL_STRATEGY = STRATEGY.EXCLUDE;
 
-  private Map<String, List<String>> modelExclusions = new HashMap<String, List<String>>();
-
+  private Map<String, MatchingStrategy> modelExclusions = new HashMap<String, MatchingStrategy>();
+  
   private ObjectMapper mapper = new ObjectMapper();
 
   public void reloadExclusions() {
@@ -54,26 +56,38 @@ public class ModelComparator implements AuditComparator {
   
   @PostConstruct
   public void initConf() {
-    try {
-      File excludeFiles[] = getAttributeIgnoreFiles();
-      for (int i = 0; i < excludeFiles.length; i++) {
+
+    File excludeFiles[] = getAttributeIgnoreFiles();
+    for (int i = 0; i < excludeFiles.length; i++) {
+      try {
         LOG.info("Parsing: {} file for exclusions", excludeFiles[i].getPath());
-        LinkedHashMap<?, ?> map = mapper.readValue(excludeFiles[i], LinkedHashMap.class);
-        modelExclusions.putAll((Map<? extends String, ? extends List<String>>) map);
+        MatchingStrategy strategy = mapper.readValue(excludeFiles[i], MatchingStrategy.class);
+        modelExclusions.put(strategy.getModelClass(), strategy);
+      } catch (Exception e) {
+        LOG.warn("Unable to parse file: {}. Exception: {}",excludeFiles[i].getPath(), e);
       }
-    } catch (Exception e) {
-      LOG.error("Unable to parse global_exclusion_model_attributes.json file", e);
     }
-    GLOBAL_IGNORE_ATTRIBUTE_LIST.addAll(modelExclusions.get("global_exclusion_model_attributes"));
+
+    LOG.debug(""+modelExclusions.get("global_exclusion_model_attributes"));
+    try {
+      GLOBAL_IGNORE_ATTRIBUTE_LIST.addAll(modelExclusions.get("global_exclusion_model_attributes").getAttributes());
+      GLOBAL_STRATEGY = modelExclusions.get("global_exclusion_model_attributes").getMatchStrategy();
+    } catch (Exception e) {
+      LOG.warn("Unable to create global_exclusion_model_attributes", e);
+    }
     LOG.info("Final ignore map is: {}", modelExclusions);
   }
 
-  public Map<String, List<String>> getModelExclusions() {
+  public Map<String, MatchingStrategy> getModelExclusions() {
     return modelExclusions;
   }
   
   public List<String> getGlobalExclusions() {
     return GLOBAL_IGNORE_ATTRIBUTE_LIST;
+  }
+
+  public void setGlobalStrategy(STRATEGY strategy) {
+    this.GLOBAL_STRATEGY= strategy;
   }
   
   private File[] getAttributeIgnoreFiles() {
@@ -231,6 +245,9 @@ public class ModelComparator implements AuditComparator {
 
       String []tokenizedAttribPath = attributePath.split("/");
       for (int i = 0; i < tokenizedAttribPath.length; i++) {
+        if(StringUtils.isEmpty(tokenizedAttribPath[i])) {
+          continue;
+        }
         String tempPath = "/" + tokenizedAttribPath[i];
         JsonNode containerObj = null;
         containerObj = right.at(tempPath).get("@class");
@@ -238,22 +255,37 @@ public class ModelComparator implements AuditComparator {
           containerObj = right.get("@class");
         }
         if(containerObj!=null && containerObj.asText()!=null) {
-          if((modelExclusions.get(containerObj.asText())!=null) && (modelExclusions.get(containerObj.asText()).contains(tokenizedAttribPath[i]))) {
-            LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored as model property of: '{}'", attributePath, containerObj.asText());
-            ignoreNode = true;
-            break;
+          if(modelExclusions.get(containerObj.asText())!=null) {
+            STRATEGY strategy = modelExclusions.get(containerObj.asText()).getMatchStrategy();
+            List<String> attributes = modelExclusions.get(containerObj.asText()).getAttributes();
+            if((strategy==STRATEGY.EXCLUDE) && (attributes.contains(tokenizedAttribPath[i]))) {
+              LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored as model property of: '{}'", attributePath, containerObj.asText());
+              ignoreNode = true;
+              break;
+            }
+            else if((strategy==STRATEGY.INCLUDE) && !(attributes.contains(tokenizedAttribPath[i]))) {
+              LOG.debug("Removing '{}' attribute from JSON diff output as it is not included in model property of: '{}'", attributePath, containerObj.asText());
+              ignoreNode = true;
+              break;
+            }
           }
         }
       }
       
-      if (!ignoreNode && GLOBAL_IGNORE_ATTRIBUTE_LIST.contains(attributeName)) {
-        LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored in GLOBAL_IGNORE_ATTRIBUTE_LIST", attributePath);
-        ignoreNode = true;
+      if(!ignoreNode) {
+        if(GLOBAL_STRATEGY == GLOBAL_STRATEGY.EXCLUDE && GLOBAL_IGNORE_ATTRIBUTE_LIST.contains(attributeName)) {
+          LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored in GLOBAL_IGNORE_ATTRIBUTE_LIST", attributePath);
+          ignoreNode = true;
+        }
+        else if(GLOBAL_STRATEGY == GLOBAL_STRATEGY.INCLUDE && !GLOBAL_IGNORE_ATTRIBUTE_LIST.contains(attributeName)) {
+          LOG.debug("Removing '{}' attribute from JSON diff output as it is not included in GLOBAL_IGNORE_ATTRIBUTE_LIST", attributePath);
+          ignoreNode = true;
+        }
       }
-      else if(objectClass.asText()!=null && modelExclusions.get(objectClass.asText()) != null && modelExclusions.get(objectClass.asText()).contains(attributeName)) {
-        LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored as model property", attributePath);
-        ignoreNode = true;
-      }
+//      else if(objectClass.asText()!=null && modelExclusions.get(objectClass.asText()) != null && modelExclusions.get(objectClass.asText()).contains(attributeName)) {
+//        LOG.debug("Removing '{}' attribute from JSON diff output as it is marked to be ignored as model property", attributePath);
+//        ignoreNode = true;
+//      }
       else if((diffNode.get("value")!=null) && 
           (diffNode.get("value").asText().equalsIgnoreCase("java.util.LinkedHashSet") || 
               diffNode.get("value").asText().equalsIgnoreCase("java.util.HashSet")))
