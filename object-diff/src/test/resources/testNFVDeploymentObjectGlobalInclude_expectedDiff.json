@@ -1,0 +1,92 @@
+[
+  {
+    "op": "replace",
+    "configuredValue": "03c96a18-6c80-40da-9f3c-5c01dab4379a",
+    "intendedValue": "70a4489d-d889-47ec-a45e-608607a72909",
+    "moveFromPath": null,
+    "path": "/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.Deployment"
+  },
+  {
+    "op": "replace",
+    "configuredValue": "50806549-8dd7-4052-9316-88106a1b57fe",
+    "intendedValue": "bc2eaa93-b144-4040-9807-74d0ef9a0df4",
+    "moveFromPath": null,
+    "path": "/adminRules/1/0/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.Rule"
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "f24ccb02-f43f-4760-a8f5-660dc238c2c5",
+    "moveFromPath": null,
+    "path": "/interfaces/1/0/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.VmGroupInterface"
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "850e4884-5447-416b-9ec6-0613dfc1d2c6",
+    "moveFromPath": null,
+    "path": "/interfaces/1/1/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.VmGroupInterface"
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "6ca43397-67cc-4719-bab5-e9dc536c705d",
+    "moveFromPath": null,
+    "path": "/interfaces/1/2/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.VmGroupInterface"
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "8b06f90e-d470-4d11-a9b4-f5e7c7c4cf46",
+    "moveFromPath": null,
+    "path": "/interfaces/1/3/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.VmGroupInterface"
+  },
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "11e52cc6-9280-4935-9d32-49f5de3e4748",
+    "moveFromPath": null,
+    "path": "/interfaces/1/4/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.VmGroupInterface"
+  },
+  {
+    "op": "replace",
+    "configuredValue": "11b43e79-a159-44c4-8fab-39396535aa25",
+    "intendedValue": "88a17578-a15a-4b6e-b113-fdb4335e5c39",
+    "moveFromPath": null,
+    "path": "/kpi/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.Kpi"
+  },
+  {
+    "op": "replace",
+    "configuredValue": "eceb7801-0960-48cf-a059-584a13057d65",
+    "intendedValue": "f6f99347-22df-4006-9461-432856411fa5",
+    "moveFromPath": null,
+    "path": "/kpi/metricCollector/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.MetricCollector"
+  },
+  {
+    "op": "replace",
+    "configuredValue": "890ebee1-cb3a-4d12-a68e-a39590adf642",
+    "intendedValue": "8d29ad4b-103a-4f31-be33-60f43b2bf136",
+    "moveFromPath": null,
+    "path": "/scaling/instanceUuid",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.Scaling"
+  }
+]

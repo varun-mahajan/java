@@ -91,6 +91,29 @@ public class ModelComparatorTest {
   }
   
   /**
+   * Test readable output
+   * @throws Exception
+   */
+  @Test
+  public void testNFVDeploymentObjectIncludeDescriptionReadable() throws Exception {
+    String baseResource = "testNFVDeploymentObjectIncludeDescriptionReadable";
+
+    MatchingStrategy s = new MatchingStrategy();
+    s.setModelClass("com.cisco.esa.model.Deployment");
+    s.setAttributes(Arrays.asList("description"));
+    s.setMatchStrategy(STRATEGY.INCLUDE);
+    modelComparator.getModelExclusions().put("com.cisco.esa.model.Deployment",s);
+    
+    JsonNode beforeNode = mapper.readTree(Thread.currentThread().getContextClassLoader().getResource(baseResource+"_left.json")); 
+    JsonNode afterNode = mapper.readTree(Thread.currentThread().getContextClassLoader().getResource(baseResource+"_right.json"));
+    List<String> expectedDiff = mapper.readValue(Thread.currentThread().getContextClassLoader().getResource(baseResource+"_expectedDiff.json"), List.class);
+    
+    List<String> actualDiff =  modelComparator.diffReadable(beforeNode, afterNode);
+    LOG.info(mapper.writeValueAsString(actualDiff));
+    Assert.assertEquals(mapper.writeValueAsString(expectedDiff), mapper.writeValueAsString(actualDiff));
+  }
+  
+  /**
    * Test global INCLUDE
    * @throws Exception
    */

@@ -1,0 +1,11 @@
+[
+  {
+    "op": "add",
+    "configuredValue": null,
+    "intendedValue": "ISRV",
+    "moveFromPath": null,
+    "path": "/description",
+    "objectClassifier": "MODEL",
+    "objectType": "com.cisco.esa.model.Deployment"
+  }
+]
